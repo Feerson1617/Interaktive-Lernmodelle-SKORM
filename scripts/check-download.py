@@ -1,4 +1,4 @@
-"""Validate the exact inner ZIP after Actions download, including byte equality."""
+"""Validate the directly downloadable ZIP after Actions download, including byte equality."""
 import hashlib
 import json
 from pathlib import Path
@@ -9,4 +9,4 @@ if {p.name for p in downloaded.parent.iterdir()} != {name}: raise ValueError('Un
 if downloaded.read_bytes() != (ROOT / 'dist' / name).read_bytes(): raise ValueError('Downloaded ZIP differs')
 report = validate_package(downloaded)
 (ROOT / 'test-results/download.json').write_text(json.dumps(report, indent=2) + '\n')
-print(f'Passed: upload the inner file {name} after extracting SCORM-Exportdatei.zip once.')
+print(f'Passed: directly downloaded {name} is ready for itslearning without unpacking or recompression.')

@@ -12,7 +12,7 @@
 4. Für Unterrichtsmodus zusätzlich den Speichervertrag angeben. Codex soll zuerst die Speicherwege des konkreten Projekts prüfen, einen expliziten Adapter implementieren und dessen flüchtiges Verhalten sowie Erhalt fremder Daten testen. Nur dann `classroomMode` aktivieren.
 5. Vorlagenprüfungen und projektspezifische Bedienprüfungen in Chromium/WebKit ausführen lassen. Bericht mit offenen dynamischen URLs, tatsächlich geprüften Szenen und Abnahmegrenzen verlangen. Keine stillen Test-Skips zum Grünmachen.
 6. Workflow auf dem Standardbranch bereitstellen (Merge erst nach eigener Freigabe). Danach **Actions → SCORM exportieren → Run workflow**. Für weitere Konfigurationen im Formular den Pfad ihrer JSON-Datei angeben.
-7. Artefakt **SCORM-Exportdatei** herunterladen und **einmal entpacken**. Die darin liegende konfigurierte ZIP ist die Importdatei. Sie wurde bereits vor dem Upload und nach dem Artefaktrückdownload geprüft.
+7. Das direkt als **`<konfigurierter Name>.zip`** angebotene Actions-Artefakt herunterladen und **ohne Entpacken oder erneutes Komprimieren** in itslearning importieren. GitHub-Actions-Läufe vor dem Umstieg auf `upload-artifact@v7` können noch eine äußere Transport-ZIP enthalten. Die direkt veröffentlichte Datei wird nach dem Artefaktrückdownload geprüft.
 8. Den tatsächlichen itslearning-/iPad-Test nach ABNAHME.md durchführen und das Ergebnis zum Paket-Hash dokumentieren.
 
 Die Beispieltests in tests/browser bleiben unabhängig von der ausgewählten Exportkonfiguration. tests/smoke startet zusätzlich das im Formular ausgewählte Paket. Für die fachlichen Funktionen einer neuen Anwendung sind eigene Tests nötig.

@@ -2,7 +2,7 @@
 
 Ergebnis, Datum, Paket-SHA-256, LMS-Version/Instanz, iPad-Modell, iPadOS/Safari-Version und Person festhalten. Erst nach echtem Import von itslearning-Kompatibilität für dieses Paket sprechen.
 
-1. Die **innere Import-ZIP** aus dem Workflow-Artefakt auswählen. Prüfen, dass ihr erster Verzeichnisebene `imsmanifest.xml` enthält. Quellen-ZIP und äußeres Download-Archiv sind keine SCORM-Pakete.
+1. Bei neuen Workflows das direkt herunterladbare **SCORM-ZIP-Artefakt** unverändert verwenden, ohne es zu entpacken oder neu zu komprimieren. Prüfen, dass `imsmanifest.xml` auf oberster ZIP-Ebene liegt. Bei alten Workflow-Läufen die äußere GitHub-Transport-ZIP einmal entpacken und nur die darin enthaltene eigentliche Import-ZIP auswählen.
 2. In der vorgesehenen itslearning-Umgebung als SCORM 1.2 importieren. Titel, Startdatei, Dateifunde und eventuelle Importmeldungen dokumentieren.
 3. Auf einem physischen iPad unter HTTPS eingebettet starten; zusätzlich separaten Tab/Fenster starten. API-Verbindung, Größenänderung, Hoch-/Querformat, Touch, Tastatur, Zoom und Scrollen prüfen.
 4. Alle Anwendungsfunktionen, Medien und bei 3D Kamera, Texturen, Decoder, Performance und Kontextverlust prüfen. Auch verzögert geladene Inhalte aufrufen.

@@ -7,10 +7,10 @@ from build import write_zip
 from validate import ROOT
 
 TOP_FILES = ['README.md', 'AGENTS.md', 'package.json', 'package-lock.json', 'requirements.txt',
-             'scorm.config.json', 'playwright.config.js', 'playwright.smoke.config.js',
+             'scorm.config.json', 'playwright.config.js', 'playwright.smoke.config.js', 'playwright.sinnblick.config.js',
              '.gitignore', '.gitattributes', 'THIRD-PARTY-NOTICES.txt']
-TOP_DIRS = ['runtime', 'schemas', 'scripts', 'tests', 'examples', 'docs', '.github']
-EXCLUDED = {'__pycache__', 'node_modules', '.git', '.build', 'test-results', 'dist'}
+TOP_DIRS = ['runtime', 'schemas', 'scripts', 'tests', 'examples', 'docs', '.github', 'modelle', 'configs']
+EXCLUDED = {'__pycache__', 'node_modules', '.git', '.build', 'test-results', 'dist', '.DS_Store'}
 
 
 def release():
