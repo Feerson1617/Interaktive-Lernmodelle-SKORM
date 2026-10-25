@@ -1,9 +1,11 @@
+import {execFileSync} from 'node:child_process';
+const asset = JSON.parse(execFileSync('python3',['-c', 'import json,zipfile,sys; print(zipfile.ZipFile(sys.argv[1]).read("__scorm/package-info.json").decode())',process.env.SCORM_ZIP || 'dist/Beispiel-SCORM-1.2.zip'],{encoding:'utf8'})).trackingMode === 'asset';
 import { test, expect } from '@playwright/test';
 for (const protocol of ['http', 'https']) for (const mode of ['embedded', 'popup']) test(`${protocol}/${mode}: configured package launches without missing/external resources`, async ({ page, context }, testInfo) => {
   const base = `${protocol}://127.0.0.1:${protocol === 'http' ? 4185 : 4186}`;
   const failures = [], external = [], errors = [];
   await context.route('**/*', route => {
-    if (route.request().url().startsWith(base + '/')) return route.continue();
+    if (new URL(route.request().url()).origin === base) return route.continue();
     external.push(route.request().url()); return route.abort();
   });
   context.on('response', response => { if (response.status() >= 400) failures.push(response.url()); });
@@ -14,9 +16,14 @@ for (const protocol of ['http', 'https']) for (const mode of ['embedded', 'popup
   let content;
   if (mode === 'popup') { const popup = page.waitForEvent('popup'); await page.locator('#launch').click(); content = await popup; }
   else { await expect.poll(() => page.frames().some(f => f.url().includes('/content/'))).toBe(true); content = page.frames().find(f => f.url().includes('/content/')); }
-  await expect(content.locator('#scorm-session')).toHaveAttribute('data-state', 'active');
+  if (!asset) await expect(content.locator('#scorm-session')).toHaveAttribute('data-state', 'active');
   await content.waitForLoadState('networkidle');
   await content.locator('body').screenshot({ path: testInfo.outputPath('launch.png') });
+  if (asset) {
+    expect(await page.evaluate(() => calls)).toEqual([]);
+    expect(failures).toEqual([]); expect(external).toEqual([]); expect(errors).toEqual([]);
+    await content.goto('about:blank'); expect(await page.evaluate(() => calls)).toEqual([]); return;
+  }
   await content.locator('#scorm-exit').click();
   await expect(content.locator('#scorm-session')).toHaveAttribute('data-state', 'finished');
   const result = await page.evaluate(() => ({ calls, activeSession, lessonStatus }));

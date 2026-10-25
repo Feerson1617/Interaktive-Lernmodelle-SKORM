@@ -1,0 +1,23 @@
+import {test,expect} from '@playwright/test';
+test('visible mission links keep a single RAM session',async({page})=>{
+  test.setTimeout(180000);
+  await page.goto('http://127.0.0.1:4185/player.html');
+  const view=()=>page.frames().find(f=>f.url().includes('/index.html'));
+  await expect.poll(()=>!!view()).toBe(true);
+  await view().locator('a[href="?mission=m2-food-transformation"]').press('Enter');
+  await expect.poll(()=>view()?.url().includes('m2-food-transformation')).toBe(true);
+  await view().locator('[data-class-choice=unsure]').press('Enter');
+  await view().locator('[data-class=feed]').press('Enter');
+  const saved=await view().evaluate(()=>aquariumLearningSnapshot().session);
+  await view().locator('[data-class=menu]').press('Enter');
+  await view().getByRole('link',{name:'Zur Missionsauswahl',exact:true}).press('Enter');
+  await expect.poll(()=>view()?.url().endsWith('/index.html')).toBe(true);
+  await expect(view().locator('[data-single=start]')).toBeVisible();
+  await view().locator('a[href="?mission=m2-food-transformation"]').press('Enter');
+  await expect.poll(()=>view()?.url().includes('m2-food-transformation')).toBe(true);
+  await expect(view().locator('[data-class-stage=food-observe-ready]')).toBeVisible();
+  expect(await view().evaluate(()=>aquariumLearningSnapshot().session)).toEqual(saved);
+  const host=page.frames().find(f=>f.url().includes('classroom.html'));
+  expect((await host.evaluate(()=>aquariumClassroomSnapshot())).frames).toBe(1);
+  expect(await page.evaluate(()=>calls)).toEqual([]);
+});

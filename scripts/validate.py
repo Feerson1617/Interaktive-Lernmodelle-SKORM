@@ -150,7 +150,7 @@ def validate_package(filename, extract=None):
     resources = manifest.findall('cp:resources/cp:resource', NS)
     if len(resources) != 1 or len(items) != 1: raise ValueError('Expected one SCO/item')
     resource = resources[0]
-    if resource.get('type') != 'webcontent' or resource.get(f'{{{ADL}}}scormtype') != 'sco' or items[0].get('identifierref') != resource.get('identifier'): raise ValueError('Invalid SCO reference')
+    if resource.get('type') != 'webcontent' or resource.get(f'{{{ADL}}}scormtype') not in ('sco', 'asset') or items[0].get('identifierref') != resource.get('identifier'): raise ValueError('Invalid SCO reference')
     if any(not (node.findtext('cp:title', namespaces=NS) or '').strip() for node in [orgs[0], items[0]]): raise ValueError('Missing title')
     launch = canonical(resource.get('href', ''))
     if launch not in files or not launch.lower().endswith('.html'): raise ValueError('Missing HTML launch')
@@ -162,6 +162,11 @@ def validate_package(filename, extract=None):
     for record in json.loads((ROOT / 'schemas/sources.json').read_text()):
         if hashlib.sha256(files[record['file']]).hexdigest() != record['sha256']: raise ValueError('Modified standard schema')
     info = json.loads(files['__scorm/package-info.json'])
+    if info.get('trackingMode', 'sco') != resource.get(f'{{{ADL}}}scormtype'): raise ValueError('Tracking mode mismatch')
+    if info.get('trackingMode') == 'asset':
+        if info['data_policy']['new_attempt_status'] is not None: raise ValueError('Asset cannot report status')
+        wrapper = re.search(rb'<!-- SCORM-WRAPPER-START -->(.*?)<!-- SCORM-WRAPPER-END -->', files[launch], re.S)
+        if not wrapper or wrapper[1].strip() != b'<script></script>': raise ValueError('Asset cannot contain SCO runtime')
     if info['launch'] != launch: raise ValueError('Launch metadata mismatch')
     for name, expected in info['source_sha256'].items():
         canonical(name)
