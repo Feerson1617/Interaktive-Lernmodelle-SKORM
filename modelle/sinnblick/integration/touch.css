@@ -1,0 +1,9 @@
+.source-citation small { display: block; overflow-wrap: anywhere; font-size: 11px; }
+@media (pointer: coarse) {
+  button, .button, .icon-button, .part-label, .visibility, .close-button, .close,
+  .segmented button, .distance-range button, .distance-actions button {
+    min-width: 44px; min-height: 44px;
+  }
+  input[type="range"] { min-height: 44px; }
+  .auto-zoom-control { min-height: 44px; }
+}

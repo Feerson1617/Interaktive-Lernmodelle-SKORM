@@ -2,6 +2,10 @@
 
 Eigenständiger Exporter für fertige HTML-/JavaScript-/WebGL-Anwendungen. Er erhält deren Verzeichnisstruktur, ergänzt SCORM 1.2 und erzeugt eine geprüfte ZIP mit `imsmanifest.xml` direkt im Hauptverzeichnis. Kein Zugriff auf das ursprüngliche Spielrepository erforderlich.
 
+## Sinnblick – Kopf, Auge und Ohr
+
+Das vollständige Modell ist unter `modelle/sinnblick/` erhalten. Export mit `configs/sinnblick.json` → **`Sinnblick-SCORM-1.2.zip`**. [Anleitung ohne Terminal](docs/modelle/sinnblick/README.md), [Quellstand und Integration](docs/modelle/sinnblick/INTEGRATION.md), [Prüfbericht](docs/modelle/sinnblick/PRUEFBERICHT.md) und [offene iPad-Abnahme](docs/modelle/sinnblick/ABNAHME.md). Das technische Referenzmodell und `scorm.config.json` bleiben erhalten.
+
 ## Ohne Terminal: neues GitHub-Projekt
 
 1. `SCORM-Universalvorlage.zip` entpacken. Diese Datei enthält **Quellcode**, kein LMS-Lernmodul.

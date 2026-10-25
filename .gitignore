@@ -6,3 +6,5 @@ playwright-report/
 __pycache__/
 *.pyc
 examples/webgl/vendor/
+
+.DS_Store

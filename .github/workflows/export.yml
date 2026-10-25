@@ -1,9 +1,19 @@
 name: SCORM exportieren
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'modelle/sinnblick/**'
+      - 'configs/sinnblick.json'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'playwright*.js'
+      - '.github/workflows/export.yml'
+      - 'package*.json'
   workflow_dispatch:
     inputs:
       config:
-        description: Pfad zur SCORM-Konfiguration
+        description: Konfiguration (scorm.config.json oder configs/sinnblick.json; auch eigene Pfade möglich)
         required: true
         default: scorm.config.json
 permissions:
@@ -31,7 +41,7 @@ jobs:
       - name: Referenztests, konfigurierter Export und Startprüfung
         run: node scripts/workflow-build.mjs
         env:
-          SCORM_CONFIG: ${{ inputs.config }}
+          SCORM_CONFIG: ${{ inputs.config || 'configs/sinnblick.json' }}
       # Explicit outer transport archive. The single contained ZIP is the PIF.
       - uses: actions/upload-artifact@v4
         id: export

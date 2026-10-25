@@ -1,0 +1,9 @@
+{
+  "name": "Sinnblick – Vom Kopf zu den Sinneszellen",
+  "description": "Vollständiges 3D-Lernmodell von Kopf, Auge und Ohr, einschließlich Nah-Fern-Steuerung und Schallsimulation. Ohne Speicherung personenbezogener Lernstände.",
+  "sourceDir": "../.build/sinnblick-web",
+  "entry": "index.html",
+  "output": "Sinnblick-SCORM-1.2.zip",
+  "classroomMode": false,
+  "classroomAdapter": null
+}

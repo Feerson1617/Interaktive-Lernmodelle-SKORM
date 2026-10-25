@@ -1,0 +1,12 @@
+/* The original fixed viewport calculation did not include the SCORM toolbar. */
+body.in-module { height: 100dvh; display: flex; flex-direction: column; }
+body.in-module > #scorm-session, body.in-module > .top,
+body.in-module > #module-bar { flex-shrink: 0; }
+body.in-module > #modules { flex: 1; min-height: 0; height: auto; }
+#head-view { min-height: calc(100dvh - 76px - var(--scorm-height, 0px)); }
+#loading { top: calc(76px + var(--scorm-height, 0px)); }
+@media (max-width: 760px) { #loading { top: calc(66px + var(--scorm-height, 0px)); } }
+@media (pointer: coarse) {
+  .top nav button, #module-bar button { min-height: 44px; }
+  .zoom-tools button { min-width: 44px; }
+}
