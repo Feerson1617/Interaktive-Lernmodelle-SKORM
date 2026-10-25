@@ -10,7 +10,7 @@ test('real Aquarium: RAM across six missions, no storage/API/network, fresh relo
     }
   });
   await context.route('**/*', route=>{
-    if(new URL(route.request().url()).hostname==='127.0.0.1')return route.continue();
+    if(new URL(route.request().url()).origin==='http://127.0.0.1:4185')return route.continue();
     external.push(route.request().url());return route.abort();
   });
   page.on('pageerror',e=>errors.push(e.message));

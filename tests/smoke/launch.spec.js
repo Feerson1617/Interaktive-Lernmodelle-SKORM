@@ -5,7 +5,7 @@ for (const protocol of ['http', 'https']) for (const mode of ['embedded', 'popup
   const base = `${protocol}://127.0.0.1:${protocol === 'http' ? 4185 : 4186}`;
   const failures = [], external = [], errors = [];
   await context.route('**/*', route => {
-    if (route.request().url().startsWith(base + '/')) return route.continue();
+    if (new URL(route.request().url()).origin === base) return route.continue();
     external.push(route.request().url()); return route.abort();
   });
   context.on('response', response => { if (response.status() >= 400) failures.push(response.url()); });

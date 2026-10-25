@@ -7,8 +7,10 @@ Er verwendet `trackingMode: "asset"`. Andere Konfigurationen bleiben standardmä
 SCOs mit der bisherigen Sitzungslaufzeit.
 
 ```sh
-git clone --no-checkout https://github.com/Feerson1617/Simulation-Aquarium .build/aquarium-source
-git -C .build/aquarium-source checkout cbbd20b44f3b14199d4f01170824a6cc78db651d
+git init .build/aquarium-source
+git -C .build/aquarium-source remote add origin https://github.com/Feerson1617/Simulation-Aquarium
+git -C .build/aquarium-source fetch --depth=1 origin cbbd20b44f3b14199d4f01170824a6cc78db651d
+git -C .build/aquarium-source checkout --detach FETCH_HEAD
 node scripts/prepare-aquarium.mjs
 npm run build -- configs/aquarium.json
 SCORM_ZIP=dist/Aquarium-1.0-itslearning-SCORM12.zip TEST_WEBKIT=1 npx playwright test --config playwright.smoke.config.js
@@ -43,6 +45,10 @@ Interne Navigation lädt nur ein index.html-iframe neu. Vorher sichert die Anwen
 übernommene Lifecycle-Funktion stoppt Timer/Animationen/Ereignisse und gibt
 Renderer/WebGL-Kontexte frei. Es bleibt maximal ein iframe; die Diagnosehistorie
 ist auf 30 Einträge begrenzt und enthält keine Lernprodukte.
+
+Der Host und sein inneres iframe benötigen JavaScript und gegenseitigen Zugriff
+unter derselben Herkunft. Eine LMS-Sandbox ohne diese Freigabe muss bei der realen
+Abnahme gesondert geprüft werden.
 
 Ein Reload des Hosts erzeugt eine neue Map. pagehide leert die Map; eine Rückkehr
 aus dem Back/Forward-Cache erzwingt einen Neustart. Ein manuelles Reload nur des
@@ -98,4 +104,4 @@ Snapshots dienen der Prüfung und setzen keine Missionsfortschritte.
 Realer itslearning-Import und physischer iPad/Safari-Test bleiben ausdrücklich offen.
 Vollständige Abnahme einschließlich Pinzettenbewegungen und längerer 3D-Nutzung
 muss zu einem konkreten Paket-Hash dokumentiert werden. Sie darf nicht aus reinen
-Starttests abgeleitet werden. Aktuelle Ergebnisse: `test-results/` und PR-Bericht.
+Starttests abgeleitet werden. Ergebnisse: [Prüfbericht](AQUARIUM-TESTBERICHT.md), `test-results/` und PR-Bericht.
