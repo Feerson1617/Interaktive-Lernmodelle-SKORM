@@ -1,0 +1,10 @@
+{
+  "name": "Aquarium 1.0 – Unterricht",
+  "description": "Flüchtige Aquarium-Simulation. Keine SCORM-Runtime-Datenübermittlung; reale itslearning-Abnahme offen.",
+  "sourceDir": "../.build/aquarium-web",
+  "entry": "classroom.html",
+  "output": "Aquarium-1.0-itslearning-SCORM12.zip",
+  "classroomMode": true,
+  "classroomAdapter": "classroom-storage.mjs",
+  "trackingMode": "asset"
+}

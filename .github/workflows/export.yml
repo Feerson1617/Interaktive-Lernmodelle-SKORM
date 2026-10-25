@@ -6,17 +6,30 @@ on:
         description: Pfad zur SCORM-Konfiguration
         required: true
         default: scorm.config.json
+      publish_aquarium:
+        description: Aquarium nach erfolgreichen Tests als Pre-Release veröffentlichen
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
   export:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       TEST_WEBKIT: '1'
       LIBGL_ALWAYS_SOFTWARE: '1'
     steps:
       - uses: actions/checkout@v4
+      - name: Freigegebenes Aquarium auschecken
+        if: inputs.config == 'configs/aquarium.json'
+        uses: actions/checkout@v4
+        with:
+          repository: Feerson1617/Simulation-Aquarium
+          ref: cbbd20b44f3b14199d4f01170824a6cc78db651d
+          path: .build/aquarium-source
+          fetch-depth: 1
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -28,6 +41,9 @@ jobs:
       - run: npm ci
       - run: python3 -m pip install -r requirements.txt
       - run: npx playwright install --with-deps chromium webkit
+      - name: Aquarium-Unterrichtskopie vorbereiten
+        if: inputs.config == 'configs/aquarium.json'
+        run: node scripts/prepare-aquarium.mjs
       - name: Referenztests, konfigurierter Export und Startprüfung
         run: node scripts/workflow-build.mjs
         env:
@@ -66,3 +82,22 @@ jobs:
           path: test-results/
           overwrite: true
           retention-days: 90
+
+  aquarium-release:
+    if: inputs.config == 'configs/aquarium.json' && inputs.publish_aquarium
+    needs: export
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: SCORM-Exportdatei
+          path: .build/release
+      - name: Pre-Release mit direkter Import-ZIP und Rückdownload prüfen
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: aquarium-1.0-scorm-${{ github.run_id }}-${{ github.run_attempt }}
+        run: python3 scripts/publish-aquarium.py

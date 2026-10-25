@@ -28,11 +28,13 @@ def write_zip(files, output):
 def build(config_file, runtime):
     config_file = Path(config_file).resolve()
     config = json.loads(config_file.read_text())
-    allowed = {'name', 'description', 'sourceDir', 'entry', 'output', 'classroomMode', 'classroomAdapter'}
+    allowed = {'name', 'description', 'sourceDir', 'entry', 'output', 'classroomMode', 'classroomAdapter', 'trackingMode'}
     if set(config) - allowed: raise ValueError('Unknown configuration fields')
     for key in ('name', 'description', 'sourceDir', 'entry', 'output'):
         if not isinstance(config.get(key), str) or not config[key].strip(): raise ValueError(f'Missing {key}')
     if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*\.zip', config['output']): raise ValueError('output must be a simple .zip filename')
+    tracking = config.get('trackingMode', 'sco')
+    if tracking not in ('sco', 'asset'): raise ValueError('trackingMode must be sco or asset')
     mode = config.get('classroomMode', False)
     if type(mode) is not bool: raise ValueError('classroomMode must be boolean')
     adapter = config.get('classroomAdapter')
@@ -65,7 +67,8 @@ def build(config_file, runtime):
         raise ValueError('Entry needs explicit, unique head and body elements')
     context = json.dumps({'classroomMode': mode, 'classroomAdapter': adapter}, ensure_ascii=True).replace('<', '\\u003c')
     head = f'<!-- SCORM-CONTEXT-START --><script>Object.defineProperty(window,"SCORM_CONTEXT",{{value:Object.freeze({context}),writable:false,configurable:false}});</script><!-- SCORM-CONTEXT-END -->'
-    toolbar = (ROOT / 'runtime/toolbar.html').read_text()
+    toolbar = (ROOT / 'runtime/toolbar.html').read_text() if tracking == 'sco' else ''
+    if tracking == 'asset': runtime = ''
     script = re.sub(r'</script', r'<\\/script', runtime, flags=re.I)
     body = f'<!-- SCORM-WRAPPER-START -->\n{toolbar}<script>{script}</script>\n<!-- SCORM-WRAPPER-END -->'
     html = re.sub(r'(<head\b[^>]*>)', lambda m: m[1] + head, html, count=1, flags=re.I)
@@ -76,8 +79,8 @@ def build(config_file, runtime):
     files['__scorm/THIRD-PARTY-NOTICES.txt'] = (ROOT / 'THIRD-PARTY-NOTICES.txt').read_bytes()
     files['__scorm/package-info.json'] = (json.dumps({
         'format': 'SCORM 1.2', 'template_version': 1, 'name': config['name'], 'description': config['description'],
-        'launch': entry, 'classroomMode': mode, 'classroomAdapter': adapter, 'source_sha256': originals,
-        'data_policy': {'scores': False, 'answers': False, 'completion': False, 'new_attempt_status': 'incomplete'}
+        'launch': entry, 'trackingMode': tracking, 'classroomMode': mode, 'classroomAdapter': adapter, 'source_sha256': originals,
+        'data_policy': {'scores': False, 'answers': False, 'completion': False, 'new_attempt_status': 'incomplete' if tracking == 'sco' else None}
     }, ensure_ascii=False, indent=2) + '\n').encode()
     file_nodes = '\n'.join(f'      <file href={quoteattr(name)}/>' for name in sorted(files))
     title = escape(config['name'])
@@ -91,7 +94,7 @@ def build(config_file, runtime):
  <organizations default="ORG"><organization identifier="ORG" structure="hierarchical">
   <title>{title}</title><item identifier="ITEM" identifierref="SCO" isvisible="true"><title>{title}</title></item>
  </organization></organizations>
- <resources><resource identifier="SCO" type="webcontent" adlcp:scormtype="sco" href={quoteattr(entry)}>
+ <resources><resource identifier="SCO" type="webcontent" adlcp:scormtype="{tracking}" href={quoteattr(entry)}>
 {file_nodes}
  </resource></resources>
 </manifest>

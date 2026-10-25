@@ -51,6 +51,20 @@ class PackageTests(unittest.TestCase):
         files['__scorm/package-info.json'] = json.dumps(info).encode()
         return files
 
+    def test_nontracking_asset_and_runtime_rejection(self):
+        path = self.root / 'asset.json'
+        path.write_text(json.dumps({**self.config, 'trackingMode': 'asset'}))
+        try:
+            build(path, 'throw Error("SCO runtime must not execute")')
+            with zipfile.ZipFile(self.output) as archive: files = {n: archive.read(n) for n in archive.namelist()}
+            self.assertIn(b'scormtype="asset"', files['imsmanifest.xml'])
+            self.assertNotIn(b'SCO runtime must not execute', files['pages/start.html'])
+            self.check_files(files)
+            files['pages/start.html'] = files['pages/start.html'].replace(b'<script></script>', b'<script>LMSCommit("")</script>')
+            with self.assertRaisesRegex(ValueError, 'SCO runtime'): self.check_files(files)
+        finally:
+            build(self.config_path, 'void 0;')
+
     def test_valid_modules_nested_launch_and_xml_escaping(self):
         result = self.check_files(self.original)
         self.assertEqual(result['launch'], 'pages/start.html')

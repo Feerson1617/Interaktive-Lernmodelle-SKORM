@@ -14,6 +14,7 @@ const config = JSON.parse(readFileSync(configPath));
 run('node', 'scripts/build.mjs', configPath);
 const zip = resolve('dist', config.output);
 execFileSync('npx', ['playwright', 'test', '--config', 'playwright.smoke.config.js'], { stdio: 'inherit', env: { ...process.env, SCORM_ZIP: zip } });
+if (configPath.endsWith('/configs/aquarium.json')) execFileSync('npx', ['playwright','test','--config','playwright.aquarium.config.js'], {stdio:'inherit',env:{...process.env,SCORM_ZIP:zip}});
 mkdirSync('.build/export', { recursive: true });
 if (readdirSync('.build/export').length) throw new Error('Export directory must be empty');
 copyFileSync(zip, '.build/export/' + config.output);

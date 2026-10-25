@@ -72,3 +72,14 @@ scorm.config.json  konkrete Anwendung
 ```
 
 Die Vorlage stammt aus einer SCORM-1.2-Sitzungsintegration, deren bisheriges Lernpaket laut Auftraggeber in itslearning Schleswig-Holstein importiert und auf einem iPad gestartet wurde. **Das ist keine Abnahme dieser neuen Vorlage oder künftiger Exporte.** Die separat korrigierte Referenz-ZIP stand bei der Extraktion nicht zur Verfügung. Details und verbindliche manuelle Prüfung: [Architektur und Grenzen](docs/ARCHITEKTUR.md), [Abnahme](docs/ABNAHME.md).
+
+## Aquarium 1.0
+
+Zusätzlicher Export des festgelegten Aquarium-Commits mit flüchtiger RAM-Sitzung:
+[Build, Datenschutz, direkte Release-ZIP und itslearning-Abnahme](docs/AQUARIUM.md).
+Im Exportworkflow `configs/aquarium.json` wählen; `publish_aquarium` veröffentlicht
+nach erfolgreichen Prüfungen ein Pre-Release mit direktem Import-Asset und
+SHA-256-Rückdownloadprüfung. Die Beispielkonfiguration bleibt unabhängig.
+`trackingMode` ist optional: `sco` (bisheriges Verhalten) oder `asset` (ohne
+SCORM-API-Aufrufe). Die tatsächliche itslearning-Unterstützung des Asset-Imports
+bleibt bis zur realen LMS-Abnahme offen.
