@@ -4,6 +4,8 @@ Die Importdatei heißt **`Sinnblick-SCORM-1.2.zip`**. Sie enthält das vollstän
 
 ## Herunterladen ohne Terminal
 
+Der geprüfte Export vom 25. Oktober 2026 steht direkt als [SCORM-Exportdatei](https://github.com/Feerson1617/Interaktive-Lernmodelle-SKORM/actions/runs/40187535776/artifacts/12596886289) bereit. Dieser Download bleibt bis zum 23. Januar 2027 verfügbar; danach einen neuen Export erzeugen. Auch beim direkten Download die äußere Transportdatei wie unten beschrieben einmal entpacken.
+
 1. Im Repository **Actions → SCORM exportieren** öffnen.
 2. Einen erfolgreichen Lauf für Sinnblick öffnen. Während der Prüfung dieses Pull Requests entstehen solche Läufe automatisch. Für einen eigenen Export **Run workflow** wählen, den Branch mit Sinnblick auswählen und im Feld **config** `configs/sinnblick.json` eingeben. Nach einem späteren Merge kann `main` verwendet werden. `scorm.config.json` exportiert weiterhin das technische Referenzmodell; eigene Konfigurationspfade bleiben möglich.
 3. Unten unter **Artifacts** das Artefakt **SCORM-Exportdatei** herunterladen. Dafür bei GitHub angemeldet sein. Der Link steht auch in der Zusammenfassung des Laufs.
