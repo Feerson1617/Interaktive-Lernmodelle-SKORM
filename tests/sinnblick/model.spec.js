@@ -49,6 +49,9 @@ async function range(frame, id, value) {
 }
 async function fits(frame) {
   expect(await frame.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2)).toBe(true);
+  await expect.poll(() => frame.evaluate(() => [...document.querySelectorAll('button')].filter(b => {
+    const r=b.getBoundingClientRect(); return r.width>0 && r.height>0 && (r.width<43.5 || r.height<43.5);
+  }).map(b => b.id || b.className))).toEqual([]);
 }
 async function frameFits(app) {
   const dims = await app.evaluate(() => ({ bottom: document.getElementById('modules').getBoundingClientRect().bottom, height: innerHeight }));
@@ -198,10 +201,22 @@ for (const viewport of [{ width: 1024, height: 768 }, { width: 768, height: 1024
   });
 }
 
-// Playwright has no cross-browser multi-touch API. Deliver the same PointerEvent
-// sequence to the shipped handlers; capture is stubbed only for synthetic IDs.
+// Chromium receives native touch input via CDP. WebKit has no multi-touch API;
+// it receives PointerEvents, with capture stubbed only for those synthetic IDs.
 async function touchGesture(frame, selector, pinch = false) {
   await frame.locator(selector).scrollIntoViewIfNeeded();
+  const page=frame.page();
+  if(page.context().browser().browserType().name()==='chromium') {
+    const r=await frame.locator(selector).boundingBox(), x=r.x+r.width*.5, y=r.y+r.height*.65;
+    const cdp=await page.context().newCDPSession(page);
+    const points=i=>pinch ? [{id:71,x:x-35-i*3,y},{id:72,x:x+35+i*3,y}] : [{id:71,x:x+i*12,y}];
+    try {
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:points(0)});
+      for(let i=1;i<=5;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:points(i)});await page.waitForTimeout(25);}
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    } finally {await cdp.detach();}
+    return;
+  }
   await frame.locator(selector).evaluate(async (canvas, pinch) => {
     const r = canvas.getBoundingClientRect(), x = r.left + r.width * .5, y = r.top + r.height * .65;
     const capture = canvas.setPointerCapture;
@@ -225,7 +240,10 @@ async function touchGesture(frame, selector, pinch = false) {
 }
 test('Rotation, pinch, zoom transitions and orientation change in exported models', async ({ page }, info) => {
   const app = await launch(page);
-  const headBefore = await app.locator('#head-canvas').screenshot();
+  const headCanvas=app.locator('#head-canvas'), size=await headCanvas.boundingBox();
+  await headCanvas.tap({position:{x:size.width*.535,y:size.height*.365}});
+  await expect(app.locator('#card-title')).toContainText('Fenster');
+  const headBefore = await headCanvas.screenshot();
   await touchGesture(app, '#head-canvas');
   await page.waitForTimeout(250);
   expect((await app.locator('#head-canvas').screenshot()).equals(headBefore)).toBe(false);
@@ -238,6 +256,10 @@ test('Rotation, pinch, zoom transitions and orientation change in exported model
   const eye = page.frames().find(f => f.url().endsWith('/eye/index.html'));
   await expect.poll(() => eye.evaluate(() => window.Augenblick?.ready)).toBe(true);
   await page.waitForTimeout(500);
+  const hit=await eye.evaluate(()=>{const canvas=document.getElementById('canvas'),v=Augenblick.anchors.iris.getWorldPosition(new THREE.Vector3()).project(Augenblick.camera);return {x:(v.x*.5+.5)*canvas.clientWidth,y:(-v.y*.5+.5)*canvas.clientHeight};});
+  await eye.locator('#canvas').tap({position:hit});
+  await expect.poll(()=>eye.evaluate(()=>Augenblick.state.selected)).not.toBeNull();
+  await eye.locator('#close-info').tap();
   const position = await eye.evaluate(() => Augenblick.camera.position.toArray());
   await touchGesture(eye, '#canvas');
   await expect.poll(() => eye.evaluate(() => Augenblick.camera.position.toArray())).not.toEqual(position);
