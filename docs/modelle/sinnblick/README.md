@@ -4,16 +4,16 @@ Die Importdatei heißt **`Sinnblick-SCORM-1.2.zip`**. Sie enthält das vollstän
 
 ## Herunterladen ohne Terminal
 
-Der geprüfte Export vom 25. Oktober 2026 steht direkt als [SCORM-Exportdatei](https://github.com/Feerson1617/Interaktive-Lernmodelle-SKORM/actions/runs/40187535776/artifacts/12596886289) bereit. Dieser Download bleibt bis zum 23. Januar 2027 verfügbar; danach einen neuen Export erzeugen. Auch beim direkten Download die äußere Transportdatei wie unten beschrieben einmal entpacken.
+Der geprüfte Export vom 25. Oktober 2026 steht direkt als [SCORM-Exportdatei](https://github.com/Feerson1617/Interaktive-Lernmodelle-SKORM/actions/runs/40187535776/artifacts/12596886289) bereit. Dieser Download bleibt bis zum 23. Januar 2027 verfügbar; danach einen neuen Export erzeugen. **Hinweis:** Der hier verlinkte historische Export wurde noch als äußere GitHub-Transport-ZIP bereitgestellt und muss einmal entpackt werden. Neue Exporte nach der Workflow-Umstellung liefern die SCORM-ZIP direkt.
 
 1. Im Repository **Actions → SCORM exportieren** öffnen.
 2. Einen erfolgreichen Lauf für Sinnblick öffnen. Während der Prüfung dieses Pull Requests entstehen solche Läufe automatisch. Für einen eigenen Export **Run workflow** wählen, den Branch mit Sinnblick auswählen und im Feld **config** `configs/sinnblick.json` eingeben. Nach einem späteren Merge kann `main` verwendet werden. `scorm.config.json` exportiert weiterhin das technische Referenzmodell; eigene Konfigurationspfade bleiben möglich.
-3. Unten unter **Artifacts** das Artefakt **SCORM-Exportdatei** herunterladen. Dafür bei GitHub angemeldet sein. Der Link steht auch in der Zusammenfassung des Laufs.
-4. Die äußere GitHub-Transportdatei einmal entpacken. Darin liegt **`Sinnblick-SCORM-1.2.zip`**.
-5. **Nur diese innere ZIP unverändert in itslearning als SCORM-1.2-Paket hochladen.** Nicht den GitHub-Download, nicht die Repository-Quellen-ZIP und nicht `SCORM-Universalvorlage.zip` importieren. Die innere ZIP nicht neu verpacken: `imsmanifest.xml` liegt bereits direkt in ihrer obersten Ebene.
+3. Unten unter **Artifacts** die Datei **`Sinnblick-SCORM-1.2.zip`** direkt herunterladen (GitHub-Anmeldung erforderlich). Das ist bereits das vollständige Importpaket – **keine äußere Transport-ZIP und kein Entpacken**.
+4. **Genau die heruntergeladene `Sinnblick-SCORM-1.2.zip` unverändert** in itslearning als SCORM 1.2 importieren. `imsmanifest.xml` liegt bereits auf oberster ZIP-Ebene. Weder neu komprimieren noch die Repository-Quellen-ZIP verwenden.
+5. Nur für **alte** GitHub-Actions-Läufe vor der Direktdownload-Umstellung gilt: Zuerst die äußere Transport-ZIP einmal entpacken und daraus die eigentliche `Sinnblick-SCORM-1.2.zip` nehmen.
 6. Den Import mit einem Testkurs und einem verwalteten Schul-iPad gemäß [Abnahme](ABNAHME.md) prüfen.
 
-Der Workflow prüft die erzeugte ZIP, öffnet sie in einem simulierten LMS, lädt das Exportartefakt nach dem Upload wieder herunter und vergleicht dessen Bytes mit der erzeugten Importdatei. **Export-Testnachweise** enthält Testergebnisse und Bildschirmaufnahmen. Artefakte werden 90 Tage aufbewahrt; danach einen neuen Export starten.
+Der Workflow prüft die erzeugte ZIP, öffnet sie in einem simulierten LMS, lädt die direkt veröffentlichte Import-ZIP nach dem Upload wieder herunter und vergleicht deren Bytes mit der erzeugten Importdatei. **Export-Testnachweise** enthält Testergebnisse und Bildschirmaufnahmen. Artefakte werden 90 Tage aufbewahrt; danach einen neuen Export starten.
 
 ## Im Unterricht
 
