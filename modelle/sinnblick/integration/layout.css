@@ -7,6 +7,7 @@ body.in-module > #modules { flex: 1; min-height: 0; height: auto; }
 #loading { top: calc(76px + var(--scorm-height, 0px)); }
 @media (max-width: 760px) { #loading { top: calc(66px + var(--scorm-height, 0px)); } }
 @media (pointer: coarse) {
+  button { min-width: 44px; }
   .top nav button, #module-bar button { min-height: 44px; }
   .zoom-tools button { min-width: 44px; }
 }
