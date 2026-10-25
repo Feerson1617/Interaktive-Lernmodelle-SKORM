@@ -220,8 +220,8 @@ async function touchGesture(frame, selector, pinch = false) {
   }
   await frame.locator(selector).evaluate(async (canvas, pinch) => {
     const r = canvas.getBoundingClientRect(), x = r.left + r.width * .5, y = r.top + r.height * .65;
-    const capture = canvas.setPointerCapture;
-    canvas.setPointerCapture = () => {};
+    const stage=canvas.closest('#stage'), capture=canvas.setPointerCapture, stageCapture=stage.setPointerCapture;
+    canvas.setPointerCapture = stage.setPointerCapture = () => {};
     const send = (type, id, dx) => canvas.dispatchEvent(new PointerEvent(type, {
       bubbles: true, pointerId: id, pointerType: 'touch', isPrimary: id === 71,
       clientX: x + dx, clientY: y, button: 0, buttons: type === 'pointerup' ? 0 : 1
@@ -236,7 +236,7 @@ async function touchGesture(frame, selector, pinch = false) {
       }
       send('pointerup',71,pinch ? -50 : 60);
       if(pinch)send('pointerup',72,50);
-    } finally { canvas.setPointerCapture = capture; }
+    } finally { canvas.setPointerCapture = capture; stage.setPointerCapture=stageCapture; }
   }, pinch);
 }
 test('Rotation, pinch, zoom transitions and orientation change in exported models', async ({ page }, info) => {
@@ -299,7 +299,7 @@ test('No persistence, session pause/restore keeps detail and in-memory settings'
   const app = await launch(page), eye = await open(page,app,'eye');
   await range(eye,'light',20); await range(eye,'focus-distance',42);
   await eye.locator('#retina-link').tap();
-  await app.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:false})));
+  await app.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));
   await expect(app.locator('#scorm-session')).toHaveAttribute('data-state','finished');
   await expect.poll(() => eye.evaluate(() => SenseBridge.paused)).toBe(true);
   await app.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
