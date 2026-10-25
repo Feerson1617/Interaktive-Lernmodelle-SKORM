@@ -1,0 +1,24 @@
+SINNBLICK – VOLLSTÄNDIGES PROJEKT
+
+Enthält Kopf-, Augen- und Ohrmodell sowie die aktuelle Nah-/Fern-Steuerung.
+
+STARTEN
+ZIP vollständig entpacken.
+Sinnblick-Nah-Fern.html enthält die gesamte App in einer Datei.
+index.html öffnet dieselbe App aus den einzelnen Projektdateien.
+Auf Mac/Windows in einem aktuellen Browser mit WebGL öffnen.
+Für iPhone/iPad auf einer Website bereitstellen und den HTTPS-Link öffnen.
+
+BEARBEITEN
+app.js und styles.css: Kopfansicht und gemeinsame Oberfläche.
+eye/: Augenmodell mit Entfernungsregler.
+ear/: Ohrmodell mit Schallsimulation.
+Alle Bibliotheken und Lizenzen liegen im Projekt.
+
+NACH ÄNDERUNGEN
+Mit Python 3 im Projektordner ausführen: python3 build.py
+Das erzeugt modules.js und Sinnblick.html neu.
+Sinnblick-Nah-Fern.html ist eine zusätzliche Kopie des mitgelieferten Stands.
+Für spätere Änderungen die neu erzeugte Sinnblick.html verwenden.
+
+Weitere Hinweise: README.txt sowie die Dokumentation in eye/ und ear/.

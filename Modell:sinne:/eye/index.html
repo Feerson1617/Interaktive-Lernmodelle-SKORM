@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="de" class="sinnblick-eye">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101f30">
+  <meta name="description" content="Entdecke das menschliche Auge und seine Netzhaut in einem interaktiven 3D-Modell für den Biologieunterricht.">
+  <title>Augenblick · Das Auge in 3D</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23101f30'/%3E%3Cpath d='M9 32Q32 5 55 32Q32 59 9 32Z' fill='none' stroke='%236ee7dd' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='9' fill='%236ee7dd'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="#" aria-label="Augenblick – Startansicht" id="brand-reset"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20Q20 1 36 20Q20 39 4 20Z"/><circle cx="20" cy="20" r="6"/></svg><span>augenblick<span class="brand-dot">.</span></span></a>
+    <span class="header-sub">BIOLOGIE <span>/</span> DAS AUGE IN 3D</span>
+    <button id="help-button" aria-label="Bedienung" class="button quiet" aria-haspopup="dialog"><span aria-hidden="true">?</span> <span>Bedienung</span></button>
+  </header>
+  <main>
+    <section class="workspace" aria-label="Interaktives Augenmodell">
+      <div class="workspace-heading">
+        <div><p class="eyebrow" id="eyebrow">ENTDECKEN & VERSTEHEN</p><h1 id="view-title">Wie wir sehen.</h1></div>
+        <button class="button reset" id="reset"><span aria-hidden="true">↺</span> Zurücksetzen</button>
+      </div>
+      <div class="viewbar">
+        <div class="segmented" role="group" aria-label="Darstellung des Auges"><button id="cut-button" class="active" aria-pressed="true">Schnittansicht</button><button id="whole-button" aria-pressed="false">Ganzes Auge</button></div>
+        <button id="back-button" class="button" hidden>← Zum Auge</button>
+        <label class="explode-control" id="explode-control"><span>Herauslösen</span><input type="range" min="0" max="100" value="0" id="explode" aria-label="Strukturen auseinanderziehen"><output id="explode-value" for="explode">0 %</output></label>
+      </div>
+      <div class="experiment-bar" aria-label="Das Auge ausprobieren">
+        <label class="light-control"><span class="sun-icon" aria-hidden="true">☼</span><span>Lichteinfall</span><span class="range-end">dunkel</span><input id="light" type="range" min="0" max="100" value="55" aria-label="Lichteinfall von dunkel bis hell"><span class="range-end">hell</span></label>
+        <span class="experiment-result" id="light-result">Pupille: mittel</span>
+        <section id="accommodation-control" aria-label="Nah und fern scharf sehen">
+          <div class="distance-heading"><label for="focus-distance">Entfernung des Gegenstands</label><output id="focus-result" for="focus-distance">Fern · Linse flacher</output></div>
+          <div class="distance-range"><button id="near-button" aria-pressed="false" aria-label="Auf einen nahen Gegenstand scharfstellen">Nah</button><input id="focus-distance" type="range" min="0" max="100" step="1" value="100" aria-describedby="focus-explanation"><button id="far-button" class="active" aria-pressed="true" aria-label="Auf einen fernen Gegenstand scharfstellen">Fern</button></div>
+          <div class="distance-footer"><p id="focus-explanation">Muskel entspannt → Bänder gespannt → Linse flacher.</p><div class="distance-actions"><button id="focus-play" aria-pressed="false">▶ Wechsel zeigen</button><button id="focus-detail">Linse vergrößern ↗</button></div></div>
+        </section>
+      </div>
+      <div id="stage" class="stage">
+        <canvas id="canvas" tabindex="0" aria-label="3D-Modell des Auges. Ziehen zum Drehen, Mausrad oder zwei Finger zum Zoomen. Pfeiltasten drehen. Plus und Minus zoomen. Bestandteile sind auch über die Liste erreichbar."></canvas>
+        <div class="stage-heading"><span class="stage-badge" id="scene-badge">01 / DAS AUGE</span><span id="scene-caption">Ein Blick ins Innere</span></div>
+        <svg id="leaders" aria-hidden="true"></svg><div id="labels" aria-label="Beschriftungen am Modell"></div>
+        <div id="hover-tip" hidden></div>
+        <div id="zoom-hint" class="zoom-hint" hidden>Noch näher zoomen → Netzhaut entdecken</div>
+        <div id="detail-caption" class="detail-caption" hidden></div>
+        <div id="receptor-legend" class="receptor-legend" hidden><span><i style="background:#b3d8df"></i>Stäbchen</span><span><i style="background:#7d9eeb"></i>Blau</span><span><i style="background:#81c99a"></i>Grün</span><span><i style="background:#ee9c85"></i>Rot</span><small>Farben zur Unterscheidung – keine echten Zellfarben</small><small class="receptor-mobile-hint">Zelle antippen → genauer ansehen</small></div><div class="stage-tools"><button class="icon-button" id="zoom-in" aria-label="Heranzoomen" title="Heranzoomen">+</button><button class="icon-button" id="zoom-out" aria-label="Herauszoomen" title="Herauszoomen">−</button><button class="icon-button labels-button" id="labels-button" aria-label="Beschriftungen anzeigen" aria-pressed="true" title="Beschriftungen">Aa</button></div>
+        <div id="intro-hint" class="intro-hint"><span class="hint-icon" aria-hidden="true">↗</span><span><strong>Was steckt in deinem Auge?</strong><br>Tippe auf einen Bestandteil.</span></div>
+        <article id="info-card" class="info-card" hidden tabindex="-1" aria-label="Erklärung zum ausgewählten Bestandteil" aria-live="polite">
+          <button id="close-info" class="close-button" aria-label="Erklärung schließen">×</button>
+          <p id="info-kicker" class="eyebrow">BESTANDTEIL</p><h2 id="info-title"></h2><p id="info-text"></p><p id="info-note" class="info-note"></p>
+          <div class="info-actions"><button id="focus-button" class="button primary">Nahansicht ↗</button><button id="detail-button" class="button primary" hidden>Stäbchen & Zapfen ↗</button><button id="hide-selected" class="button quiet">Ausblenden</button></div>
+        </article>
+        <div class="retina-directions" id="retina-directions" hidden><span><i class="light-key"></i> Licht zu den Sinneszellen ↓</span><span><i class="signal-key"></i> Signal zum Sehnerv ↑</span></div>
+        <div class="stage-bottom"><span id="gesture-hint">Ziehen: drehen <b>·</b> Scrollen / 2 Finger: zoomen</span><span class="model-note">Vereinfachtes Lernmodell</span></div>
+        <div id="fatal-error" class="fatal-error" hidden><h2>Das 3D-Modell konnte nicht starten.</h2><p>Öffne die Datei in einem aktuellen Browser mit aktivierter Hardwarebeschleunigung. Die Erklärungen in der Liste kannst du trotzdem lesen.</p></div>
+        <noscript><div class="fatal-error">Bitte aktiviere JavaScript, um das interaktive Modell zu verwenden.</div></noscript>
+      </div>
+      <div class="workspace-footer"><p id="scale-note">Farben und Größen sind vereinfacht.</p><button id="sources-button">Modell & Quellen</button></div>
+    </section>
+    <aside class="sidebar" aria-label="Bestandteile auswählen und einblenden">
+      <div class="sidebar-heading"><div><p class="eyebrow">AUF EINEN BLICK</p><h2 id="list-title">Bestandteile</h2></div><span class="count" id="part-count">13</span></div>
+      <p class="list-hint">Name antippen: entdecken.<br>Augensymbol: ein- oder ausblenden.</p>
+      <div id="parts-list" class="parts-list"></div>
+      <button id="show-all" class="button show-all">Alle einblenden</button>
+      <button class="retina-link" id="retina-link"><span class="retina-icon" aria-hidden="true">⊙</span><span><strong>Noch genauer hinsehen</strong><small>Die Netzhaut in 3D entdecken</small></span><span aria-hidden="true">↗</span></button>
+      <button class="retina-link" id="receptors-link" hidden><span class="retina-icon" aria-hidden="true">◉</span><span><strong>Stäbchen &amp; Zapfen</strong><small>Zellen vergleichen und hineinsehen</small></span><span aria-hidden="true">↗</span></button><div class="thought"><span class="eyebrow">DENK MAL NACH</span><p id="thought-text">Warum kannst du im Dunkeln kaum Farben erkennen?</p></div>
+    </aside>
+  </main>
+  <div class="sr-only" role="status" id="status"></div>
+  <dialog id="help-dialog"><button class="close-button" data-close-dialog aria-label="Schließen">×</button><p class="eyebrow">SO GEHT’S</p><h2>Dein Blick ins Auge</h2><dl><dt>Drehen</dt><dd>Mit gedrückter Maustaste oder einem Finger über das Modell ziehen.</dd><dt>Zoomen</dt><dd>Mausrad, zwei Finger oder + / − nutzen. Weiter hineinzoomen öffnet Details. Herauszoomen führt zur größeren Ansicht zurück.</dd><dt>Entdecken</dt><dd>Einen Bestandteil oder seine Beschriftung antippen. Die Erklärung öffnet sich direkt am Modell.</dd><dt>Nahansicht</dt><dd>Die Infokarte öffnet eine Nahansicht. „Noch genauer hinsehen“ führt direkt zur Netzhaut.</dd><dt>Ausprobieren</dt><dd>Mehr Licht macht die Pupille kleiner. Der Regler „Entfernung des Gegenstands“ verändert Linse, Muskel und Linsenbänder. „Wechsel zeigen“ spielt den Vorgang langsam ab. „Linse vergrößern“ öffnet die Nahansicht.</dd><dt>Ins Innere schauen</dt><dd>Die Schnittansicht öffnen, Schichten ausblenden oder mit „Herauslösen“ auseinanderziehen.</dd><dt>Tastatur</dt><dd>Mit Tab auswählen und mit Enter aktivieren. Im 3D-Feld drehen die Pfeiltasten; + und − zoomen. Escape schließt die Erklärung.</dd></dl><p class="dialog-note">Alles läuft auf deinem Gerät, ohne Anmeldung und ohne Internet.</p></dialog>
+  <dialog id="sources-dialog"><button class="close-button" data-close-dialog aria-label="Schließen">×</button><p class="eyebrow">ZUM LERNMODELL</p><h2>Vereinfacht. Mit Absicht.</h2><p>Das Modell zeigt die wichtigsten Teile des Auges. Formen, Farben und Größen sind vereinfacht. In der Schnittansicht ist das Auge geöffnet.</p><p>Der Entfernungsregler zeigt vereinfacht, wie das Auge scharfstellt. Die Abstände sind nicht maßstabsgetreu. Die zusätzliche Pupillenverengung beim Nahsehen wird hier nicht gezeigt; die Pupille reagiert auf den Lichtregler.</p><p>Die Pupille ist eine Öffnung. Gelber und blinder Fleck sind kleine Bereiche der Netzhaut.</p><p>Die Nahaufnahmen zeigen nur einige Zellen. Manche Teile sind geöffnet, damit du hineinsehen kannst.</p><p>Die Farben helfen, die Zapfentypen zu unterscheiden. Die Zellen sind in Wirklichkeit nicht blau, grün oder rot. Jeder Typ reagiert auf mehrere Lichtfarben. Erst ihre gemeinsamen Signale ermöglichen das Farbsehen.</p><h3>Fachliche Grundlagen</h3><ul><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK11522/" target="_blank" rel="noopener noreferrer">Webvision: Aufbau der Stäbchen und Zapfen</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK52768/" target="_blank" rel="noopener noreferrer">Webvision: Wie Sinneszellen auf Licht reagieren</a></li><li><a href="https://pubmed.ncbi.nlm.nih.gov/1722224/" target="_blank" rel="noopener noreferrer">Curcio und andere: Zapfen in der Netzhaut (1991)</a></li><li><a href="https://www.nei.nih.gov/eye-health-information/healthy-vision/nei-for-kids/about-eye" target="_blank" rel="noopener noreferrer">National Eye Institute: About the Eye</a></li><li><a href="https://www.nei.nih.gov/learn-about-eye-health/healthy-vision/how-eyes-work" target="_blank" rel="noopener noreferrer">National Eye Institute: How the Eyes Work</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK11533/" target="_blank" rel="noopener noreferrer">Webvision: Simple Anatomy of the Retina</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK532252/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf: Pupillenmuskulatur</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK482132/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf: Ziliarmuskel und Scharfstellen</a></li></ul><p class="dialog-note">3D-Darstellung mit Three.js (MIT-Lizenz). Quellenlinks benötigen Internet; das Modell selbst nicht.</p></dialog>
+  <script src="three.min.js"></script>
+  <script src="bridge.js"></script><script src="app.js"></script>
+</body>
+</html>
