@@ -1,0 +1,28 @@
+[
+  {
+    "file": "adlcp_rootv1p2.xsd",
+    "source": "https://raw.githubusercontent.com/cybercussion/SCOBot/017a47ede547dd0c698f9b629d4dfb965b91d52b/schemas/scorm12_schemas/adlcp_rootv1p2.xsd",
+    "sha256": "e1e807986d60ac9f7bfe00a4afa5087505278b705d620ab0b863ab9b01cf490e"
+  },
+  {
+    "file": "ims_xml.xsd",
+    "source": "https://raw.githubusercontent.com/adlnet/SCORM-2004-4ed-Test-Suite/050f1b4282c914154ab80254e4767ce8c58d0d36/software_development/xml/xsd/xml.xsd",
+    "sha256": "95907dad3dea7debdd26bddeab77e3946b95370329994beefa74253be105c3e2",
+    "note": "Unmodified XML namespace schema from the ADL test suite, packaged under the filename required by the legacy imports. Replaces the legacy copy with an invalid default XML namespace binding."
+  },
+  {
+    "file": "imscp_rootv1p1p2.xsd",
+    "source": "https://raw.githubusercontent.com/cybercussion/SCOBot/017a47ede547dd0c698f9b629d4dfb965b91d52b/schemas/scorm12_schemas/imscp_rootv1p1p2.xsd",
+    "sha256": "c076c71ce9ea220bcc1bd9eae3ca019f8bcce1a43634567723f1c2d8ae04cc81"
+  },
+  {
+    "file": "XMLSchema.dtd",
+    "source": "https://raw.githubusercontent.com/adlnet/SCORM-2004-4ed-Test-Suite/050f1b4282c914154ab80254e4767ce8c58d0d36/software_development/xml/xsd/XMLSchema.dtd",
+    "sha256": "c69f01c9bc174fef53908e322e8e294b1f54f9f3430242b02ad8237322eae4b1"
+  },
+  {
+    "file": "datatypes.dtd",
+    "source": "https://raw.githubusercontent.com/adlnet/SCORM-2004-4ed-Test-Suite/050f1b4282c914154ab80254e4767ce8c58d0d36/software_development/xml/xsd/datatypes.dtd",
+    "sha256": "6946432ca7af2e9584f91b48564111fd2c73c8debbbcd9a0e3f5ddd382eeb51c"
+  }
+]

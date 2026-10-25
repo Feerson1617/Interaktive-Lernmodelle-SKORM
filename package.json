@@ -1,0 +1,21 @@
+{
+  "name": "scorm-universalvorlage",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Eigenständiger, lokal prüfbarer SCORM-1.2-Exporter für fertige Webanwendungen",
+  "scripts": {
+    "prepare:example": "node scripts/prepare-example.mjs",
+    "build": "node scripts/build.mjs",
+    "validate": "python3 scripts/validate.py",
+    "test": "node --test tests/*.test.js && python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "test:browser": "playwright test",
+    "check": "npm run prepare:example && npm run build && npm test && npm run test:browser"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2",
+    "acorn": "8.15.0",
+    "esbuild": "0.25.12",
+    "three": "0.180.0"
+  }
+}

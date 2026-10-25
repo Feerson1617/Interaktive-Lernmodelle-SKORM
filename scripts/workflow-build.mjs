@@ -1,0 +1,20 @@
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
+const run = (...args) => execFileSync(args[0], args.slice(1), { stdio: 'inherit' });
+// Test the independent reference even when the user config points to a different app.
+mkdirSync('.build', { recursive: true });
+writeFileSync('.build/reference.json', JSON.stringify({ name: 'Referenzmodell', description: 'Lokales 3D-Beispiel', sourceDir: '../examples/webgl', entry: 'pages/start.html', output: 'Beispiel-SCORM-1.2.zip', classroomMode: false, classroomAdapter: null }));
+run('node', 'scripts/prepare-example.mjs');
+run('node', 'scripts/build.mjs', '.build/reference.json');
+run('npm', 'test');
+run('npm', 'run', 'test:browser');
+const configPath = resolve(process.env.SCORM_CONFIG || 'scorm.config.json');
+const config = JSON.parse(readFileSync(configPath));
+run('node', 'scripts/build.mjs', configPath);
+const zip = resolve('dist', config.output);
+execFileSync('npx', ['playwright', 'test', '--config', 'playwright.smoke.config.js'], { stdio: 'inherit', env: { ...process.env, SCORM_ZIP: zip } });
+mkdirSync('.build/export', { recursive: true });
+if (readdirSync('.build/export').length) throw new Error('Export directory must be empty');
+copyFileSync(zip, '.build/export/' + config.output);
+writeFileSync('.build/selected.json', JSON.stringify({ output: config.output }));

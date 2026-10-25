@@ -1,0 +1,9 @@
+{
+  "name": "Lokales 3D-Lernmodell",
+  "description": "Beispiel für Module, dynamische Imports, JSON, GLB, GLTF und Texturen ohne CDN.",
+  "sourceDir": "examples/webgl",
+  "entry": "pages/start.html",
+  "output": "Beispiel-SCORM-1.2.zip",
+  "classroomMode": false,
+  "classroomAdapter": null
+}

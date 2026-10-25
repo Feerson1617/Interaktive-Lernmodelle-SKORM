@@ -1,0 +1,11 @@
+<style>
+  #scorm-session{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:8px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left));background:#f5f3ea;color:#183c35;font:14px/1.4 system-ui,sans-serif;border-bottom:1px solid #d8ddcf}
+  #scorm-message{margin:0;flex:1;min-width:160px}
+  #scorm-exit{min-height:44px;padding:8px 14px;border:1px solid #183c35;border-radius:8px;background:white;color:#183c35;font:inherit;cursor:pointer}
+  #scorm-exit:focus-visible{outline:3px solid #183c35;outline-offset:3px}
+  #scorm-exit:disabled{opacity:.65;cursor:default}
+</style>
+<aside id="scorm-session" aria-label="Lernplattform-Sitzung" data-state="idle">
+  <p id="scorm-message" role="status" aria-live="polite">Verbindung zur Lernplattform wird hergestellt …</p>
+  <button id="scorm-exit" type="button">Sitzung beenden</button>
+</aside>

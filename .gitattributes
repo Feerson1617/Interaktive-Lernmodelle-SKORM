@@ -1,0 +1,2 @@
+schemas/*.xsd -text -whitespace
+schemas/*.dtd -text -whitespace

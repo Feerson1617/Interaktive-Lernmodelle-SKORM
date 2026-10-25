@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.build/
+test-results/
+playwright-report/
+__pycache__/
+*.pyc
+examples/webgl/vendor/

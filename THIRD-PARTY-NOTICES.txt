@@ -1,0 +1,39 @@
+SCORM-1.2-XML-Schemata (unveränderte Kopien)
+
+imscp_rootv1p1p2.xsd: IMS Global Learning Consortium
+adlcp_rootv1p2.xsd: Advanced Distributed Learning (ADL), SCORM 1.2
+ims_xml.xsd (Originaldateiname xml.xsd), XMLSchema.dtd, datatypes.dtd:
+W3C, unverändert aus dem offiziellen ADL-Test-Suite-Repository:
+https://github.com/adlnet/SCORM-2004-4ed-Test-Suite/tree/050f1b4282c914154ab80254e4767ce8c58d0d36/software_development/xml/xsd
+Das XML-Namensraumschema hat versionsunabhängige Funktion; das Paket bleibt SCORM 1.2.
+Nur der Dateiname wird an die vorhandenen SCORM-1.2-Importe angepasst.
+Die alte ims_xml.xsd-Kopie bindet den reservierten XML-Namensraum als Default und
+ist mit aktuellen XML-Parsern ungültig. Sie wird daher nicht verwendet.
+Optionales IMS-Lernobjekt-Metadata wird nicht verwendet und benötigt kein MD-XSD.
+
+Bezugsquelle: cybercussion/SCOBot, schemas/scorm12_schemas
+Revision: 017a47ede547dd0c698f9b629d4dfb965b91d52b
+https://github.com/cybercussion/SCOBot/tree/017a47ede547dd0c698f9b629d4dfb965b91d52b/schemas/scorm12_schemas
+Die Originaldateien einschließlich Copyright-Hinweisen wurden unverändert übernommen.
+SHA-256 und genaue Quellen stehen unter schemas/sources.json.
+
+Das Quellrepository nennt Creative Commons Attribution-ShareAlike 4.0 International:
+This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/
+You are free to Share and Adapt the material for any purpose, even commercially.
+Attribution: give appropriate credit, a link to the license and indicate changes.
+ShareAlike: adaptations must be distributed under the same license.
+Es wurden keine Anpassungen an den Schemata vorgenommen. Diese Hinweise betreffen
+nur die beigefügten Schemadateien; der selbst geschriebene Adapter verwendet keinen
+Programmcode von SCOBot oder pipwerks.
+
+Alle Webadressen in dieser Datei und XML-Namensraum-URIs sind Quellenangaben;
+sie werden vom Lernspiel nicht angefordert. Laufzeitressourcen liegen im Paket.
+
+Das eigenständige Beispiel verwendet Three.js 0.180.0 (MIT-Lizenz).
+Die Original-Lizenz wird bei der Beispielvorbereitung nach
+examples/webgl/vendor/three/LICENSE.txt kopiert und mit dem Beispiel exportiert.
+Bezugsquelle: https://www.npmjs.com/package/three/v/0.180.0
+GLTFLoader und BufferGeometryUtils: nur Importpfade auf lokale relative Dateien
+umgestellt. Beispielgeometrien und Textur werden lokal durch prepare-example.mjs
+erzeugt; keine fremden Modell- oder Bilddateien.

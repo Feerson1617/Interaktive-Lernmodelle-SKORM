@@ -1,0 +1,68 @@
+name: SCORM exportieren
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: Pfad zur SCORM-Konfiguration
+        required: true
+        default: scorm.config.json
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      TEST_WEBKIT: '1'
+      LIBGL_ALWAYS_SOFTWARE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: npm ci
+      - run: python3 -m pip install -r requirements.txt
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Referenztests, konfigurierter Export und Startprüfung
+        run: node scripts/workflow-build.mjs
+        env:
+          SCORM_CONFIG: ${{ inputs.config }}
+      # Explicit outer transport archive. The single contained ZIP is the PIF.
+      - uses: actions/upload-artifact@v4
+        id: export
+        with:
+          name: SCORM-Exportdatei
+          path: .build/export/*.zip
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 90
+      - uses: actions/download-artifact@v4
+        with:
+          name: SCORM-Exportdatei
+          path: .build/download
+      - run: python3 scripts/check-download.py
+      - name: Exakte Importanleitung
+        env:
+          DOWNLOAD: ${{ steps.export.outputs.artifact-url }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          name = json.loads(Path('.build/selected.json').read_text())['output']
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as out:
+              out.write(f"[SCORM-Exportdatei herunterladen]({os.environ['DOWNLOAD']})\n\n")
+              out.write(f"**Einmal entpacken, dann nur `{name}` in itslearning importieren.** Die innere ZIP enthält imsmanifest.xml direkt im Hauptverzeichnis. Artefaktrückdownload wurde geprüft.\n\n")
+              out.write("Automatisierte Tests ersetzen keinen echten itslearning-Import oder physischen iPad-Test.\n")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Export-Testnachweise
+          path: test-results/
+          overwrite: true
+          retention-days: 90
