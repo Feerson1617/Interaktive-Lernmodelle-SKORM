@@ -54,7 +54,9 @@ class SinnblickTests(unittest.TestCase):
                 if name == 'eye/app.js':
                     self.assertEqual(archive.read(name).decode().replace(
                         'bridge.ready({resume(){resize();lastDrawTime=0;requestDraw();},activate()',
-                        'bridge.ready({activate()'), (SOURCE / name).read_text())
+                        'bridge.ready({activate()').replace(
+                        'spacing=Math.max(38,...items.map(p=>p.node.offsetHeight+6));', 'spacing=38;').replace(
+                        'endY=y+p.node.offsetHeight/2;', 'endY=y+16;'), (SOURCE / name).read_text())
                 else:
                     self.assertEqual(archive.read(name), (SOURCE / name).read_bytes())
         subprocess.run(['python3', 'scripts/prepare-sinnblick.py'], cwd=ROOT, check=True)

@@ -48,6 +48,10 @@ def prepare():
              '<link rel="stylesheet" href="../integration/touch.css"></head>'))
     edit('eye/app.js', lambda s: replace_once(s, 'bridge.ready({activate()',
          'bridge.ready({resume(){resize();lastDrawTime=0;requestDraw();},activate()'))
+    # The original 38px label spacing would overlap 44px touch targets.
+    edit('eye/app.js', lambda s: replace_once(replace_once(s, 'spacing=38;',
+         'spacing=Math.max(38,...items.map(p=>p.node.offsetHeight+6));'),
+         'endY=y+16;', 'endY=y+p.node.offsetHeight/2;'))
     # Preserve citation titles and URLs, without outbound navigation in the SCO.
     def citations(html):
         html, count = re.subn(r'<a href="(https://[^"]+)" target="_blank" rel="noopener noreferrer">(.*?)</a>',

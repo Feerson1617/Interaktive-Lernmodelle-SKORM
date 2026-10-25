@@ -105,6 +105,7 @@ for (const viewport of [{ width: 1024, height: 768 }, { width: 768, height: 1024
     await eye.locator('#receptors-link').tap();
     await expect.poll(() => eye.evaluate(() => Augenblick.state.mode)).toBe('receptors');
     await eye.locator('#canvas').screenshot({ path: info.outputPath('receptors.png') });
+    expect(await eye.evaluate(()=>{const boxes=[...document.querySelectorAll('#labels button:not([hidden])')].map(e=>e.getBoundingClientRect());return boxes.some((a,i)=>boxes.slice(i+1).some(b=>Math.min(a.right,b.right)>Math.max(a.left,b.left)&&Math.min(a.bottom,b.bottom)>Math.max(a.top,b.top)));})).toBe(false);
     for (const id of ['pr-rod', 'pr-s', 'pr-m', 'pr-l']) {
       await eye.locator(`[data-select="${id}"]`).tap();
       await eye.locator('#focus-button').tap();
