@@ -42,18 +42,31 @@ jobs:
         run: node scripts/workflow-build.mjs
         env:
           SCORM_CONFIG: ${{ inputs.config || 'configs/sinnblick.json' }}
-      # Explicit outer transport archive. The single contained ZIP is the PIF.
-      - uses: actions/upload-artifact@v4
+      - name: Import-ZIP-Dateinamen aus dem geprüften Build übernehmen
+        id: export_file
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          output = json.loads(Path('.build/selected.json').read_text())['output']
+          assert output == Path(output).name and output.endswith('.zip'), output
+          files = list(Path('.build/export').iterdir())
+          assert len(files) == 1 and files[0].is_file() and files[0].name == output, files
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write(f"filename={output}\n")
+          PY
+      - name: Fertige SCORM-ZIP DIREKT ohne weitere ZIP-Schicht hochladen
+        uses: actions/upload-artifact@v7
         id: export
         with:
-          name: SCORM-Exportdatei
-          path: .build/export/*.zip
+          path: .build/export/${{ steps.export_file.outputs.filename }}
+          archive: false
           if-no-files-found: error
-          overwrite: true
           retention-days: 90
-      - uses: actions/download-artifact@v4
+      - name: Exakte Direktdatei zur Kontrolle zurückladen
+        uses: actions/download-artifact@v8
         with:
-          name: SCORM-Exportdatei
+          name: ${{ steps.export_file.outputs.filename }}
           path: .build/download
       - run: python3 scripts/check-download.py
       - name: Exakte Importanleitung
@@ -65,8 +78,8 @@ jobs:
           from pathlib import Path
           name = json.loads(Path('.build/selected.json').read_text())['output']
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as out:
-              out.write(f"[SCORM-Exportdatei herunterladen]({os.environ['DOWNLOAD']})\n\n")
-              out.write(f"**Einmal entpacken, dann nur `{name}` in itslearning importieren.** Die innere ZIP enthält imsmanifest.xml direkt im Hauptverzeichnis. Artefaktrückdownload wurde geprüft.\n\n")
+              out.write(f"[{name} direkt herunterladen]({os.environ['DOWNLOAD']})\n\n")
+              out.write(f"**Direkt heruntergeladenes `{name}` unverändert in itslearning importieren.** Kein Entpacken und kein erneutes Komprimieren. `imsmanifest.xml` liegt im ZIP-Hauptverzeichnis; die direkt veröffentlichte Datei wurde nach dem Rückdownload byteweise geprüft.\n\n")
               out.write("Automatisierte Tests ersetzen keinen echten itslearning-Import oder physischen iPad-Test.\n")
           PY
       - uses: actions/upload-artifact@v4
