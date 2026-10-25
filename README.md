@@ -12,9 +12,9 @@ Das vollständige Modell ist unter `modelle/sinnblick/` erhalten. Export mit `co
 2. Ein leeres GitHub-Repository anlegen und den **Inhalt** als Repository-Wurzel übernehmen. Auch `.github/workflows/export.yml`, `.gitignore` und `.gitattributes` übernehmen (versteckte Dateien einblenden). Das kann Codex erledigen; siehe [Codex-Anleitung](docs/CODEX.md).
 3. Workflowdatei auf dem Standardbranch bereitstellen, Actions aktivieren.
 4. **Actions → SCORM exportieren → Run workflow**. Für das enthaltene 3D-Beispiel sind keine Konfigurationsänderungen nötig.
-5. Nach erfolgreichem Lauf das Artefakt **SCORM-Exportdatei** herunterladen. Diese GitHub-ZIP ist eine **äußere Transportdatei**: einmal entpacken. Nur die darin enthaltene konfigurierte Datei, zunächst **`Beispiel-SCORM-1.2.zip`**, unverändert in itslearning importieren.
+5. Nach erfolgreichem Lauf das Artefakt mit dem tatsächlichen Dateinamen (z. B. **`Beispiel-SCORM-1.2.zip`** oder **`Sinnblick-SCORM-1.2.zip`**) **direkt herunterladen und unverändert** in itslearning importieren. Es gibt bei neuen Läufen keine zweite GitHub-ZIP-Verpackung mehr.
 
-Die innere Import-ZIP enthält unmittelbar `imsmanifest.xml`, die Startdatei in ihrem konfigurierten Unterordner und alle Ressourcen. Nicht die äußere Transportdatei importieren und die Import-ZIP nicht erneut mit einem übergeordneten Ordner verpacken. Der Workflow lädt sein Artefakt zurück und validiert die innere ZIP nochmals.
+Die direkt heruntergeladene Import-ZIP enthält unmittelbar `imsmanifest.xml`, die Startdatei und alle Ressourcen. **Nicht entpacken oder neu komprimieren.** Der Workflow lädt exakt diese Datei zurück und prüft ihren Inhalt und ihre Bytegleichheit. *Ältere GitHub-Actions-Läufe vor dieser Änderung liefern weiterhin eine äußere Transport-ZIP, die einmal entpackt werden muss.*
 
 ## Andere Anwendungen konfigurieren
 
